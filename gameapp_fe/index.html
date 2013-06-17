@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+
+  <head>
+    <title>Rangama - Anagram this!</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <!--    MOBILE STUFF -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="inmobi-site-verification" content="ecaa6bd98fce879982c94b027e7959ea">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- SEARCH ENGINE STUFF -->
+    <meta name="description" content="">
+    <meta name="keywords" content="game, words game, html5, css3, rotate, animation, challange, topten">
+    <meta name="author" content="Barbecue Studio">
+
+    <!-- SOCIAL STUFF -->
+    <meta property='og:title' content='Rangama - Anagram this'/>
+    <meta property='og:url' content='http://rangama.com/'/>
+    <meta property='og:site_name' content='Rangama'/>
+    <meta property="og:image" content=""/>
+    <meta property="og:image:secure_url" content=""/>
+
+    <link href="public/images/rangama_icon.png" type="image/x-icon" rel="icon" />
+    <link rel="stylesheet" href="css/jq.ui.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="css/icons.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="css/progress.css" type="text/css" media="screen" charset="utf-8">
+    
+    <script src="js/jq.mobi.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jq.ui.js" type="text/javascript" charset="utf-8"></script>
+
+
+    <script>
+      $.ui.autoLaunch = true;
+    </script>
+    <script src="js/jq.template.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jq.desktopBrowsers.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="js/app.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/log.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/settings.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/words_list.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/game.js" type="text/javascript" charset="utf-8"></script>
+    <script src="dictionaries/dict.js" type="text/javascript" charset="utf-8"></script>
+
+  </head>
+
+  <body>
+    <img style='display:none' src='public/images/wodrs_icon.png'/>
+    <div id='fb_root'></div>
+
+    <div id='jQUi'>
+
+    <div id="splashscreen" class='ui-loader'>
+        <div class='panel_content'>
+          <br><br>
+          <p class='description'></p><br>
+          <script>setTimeout("$.ui.launch();",10000);</script>
+          <a class='button' onclick='$.ui.launch();' href=''>Go!</a>
+        </div>
+    </div>
+
+
+
+      <div id='wodrs_title'>
+        <span class='red'>W</span>
+        <span class='orange'>o</span>
+        <span class='yellow'>d</span>
+        <span class='lgreen'>r</span>
+        <span class='green'>s</span>
+      </div>
+
+      <div id='content'>
+      <div class='ads' id='<ads_left></ads_left>' >
+        <script type="text/javascript"><!--
+          if(window.innerWidth>=850){
+            google_ad_client = "ca-pub-9759098288036220";
+            /* wodrs */
+            google_ad_slot = "4810062623";
+            google_ad_width = 120;
+            google_ad_height = 600; }
+            //--> 
+        </script>
+        <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script> 
+      </div>
+
+      <div class='ads' id='ads_right'>
+        <script type="text/javascript"><!--
+          if(window.innerWidth>=850){
+            google_ad_client = "ca-pub-9759098288036220";
+            /* wodrs */
+            google_ad_slot = "4810062623";
+            google_ad_width = 120;
+            google_ad_height = 600; }
+            //--> 
+        </script>
+        <script type="text/javascript"  src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script> 
+      </div>
+
+
+      <div class='panel' id='register' title='Wodrs sign in' data-header='none' data-footer='none'>
+        <div class='panel_header'></div>
+        <div class='panel_content'>
+          <input class='jq-ui-forms' id='reg_username' placeholder='Choose a username'/>
+          <input class='jq-ui-forms' type='password' id='reg_password' placeholder='Choose a password'/>
+          <div class='center'>
+            <a class='button' href='register'/>Sign in</a>
+          </div>
+        </div>
+      </div>
+
+        <div class='panel' id='login' title='Wodrs login' data-header='none' data-footer='none' true=selected>
+            <div class='panel_header'></div>
+            <div class='panel_content'>
+              <input class='jq-ui-forms' id='login_username' placeholder='Username' value=''/>
+              <input class='jq-ui-forms' type='password' id='login_password' placeholder='Password' value=''/>
+              <div class='center'>
+                <a class='button' href='login'/>Login</a>
+                <a class='button' href='show_register'/>Sign in</a><br><br>
+                <a href='facebook_login'/>
+                   <img style='width:260px;' src='public/images/facebook.png'/>
+                </a>
+              </div>
+            </div>
+        </div>
+
+
+        <div class='panel' id='game_list' title='Wodrs' data-footer='none' data-header='none'>
+        </div>
+
+        <div class='panel' id='game_play' data-header='none' data-footer='none' style='overflow: hidden;'>
+          <div class='panel_header'>
+            <div class='game_score right'>0/0 (0)</div>
+            <div class='game_timer left'>1:00</div>
+          </div>
+          <input type='text' id='typing'>
+          <div id='wrong_letters' class='letter_fader right'></div>
+          <div id='correct_letters' class='letter_fader left'></div>
+          <div id="words_slider">
+            <div class='word' id='word_0'></div>
+            <div class='word' id='word_1'></div>
+            <div class='word' id='word_2'></div>
+            <div class='word' id='word_3'></div>
+            <div class='word' id='word_4'></div>
+            <div class='word' id='word_5'></div>
+          </div>
+<!--          <a href='focus_keyboard' id='keyboard_icon'><img src='css/keyboard.png'></a>-->
+          <div class='typer'>
+            <div class='word_typer'>
+              <span class='inner_span'>
+                <i class='iword'>...</i>
+                <div class='last_word'></div>
+              </span>
+            </div>
+            <div class='hint'>Write!</div>
+          </div>
+        </div>
+
+        <div class='panel' id='game_info' title='Game' data-header='none'
+             data-footer='none' style=''>
+        </div>
+
+        <div class='panel' id='settings' title='Settings' data-header='none'
+             data-footer='none' style=''>
+
+        </div>
+
+        <div class='panel' id='results' title='Finish!' data-header='none'
+             data-footer='none' style='overflow: hidden;' >
+
+        </div>
+    </div>
+    </body>
+</html>

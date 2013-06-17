@@ -1,0 +1,23 @@
+  .meter { 
+    height: 25px;  /* Can be anything */
+    width: 90%;
+    margin: 0 auto;
+    position: relative;
+    border: 1px solid #444;
+    background-image: -webkit-gradient(linear,left bottom, left top, from(black), to(#5F5F6F));
+    background-image: linear-gradient(0deg, black, #5F5F6F);
+    border-radius: 25px;
+    overflow: hidden;
+  }
+
+  .meter > span {
+    display: block;
+    height: 100%;
+    -webkit-transition: all 1.5s;
+    background-image: -webkit-gradient(linear,left bottom, left top, from(#FF5D00), to(white));
+    background-image: linear-gradient(0deg, #FF5D00, white);
+    border-right: 1px solid #999;
+    position: absolute;
+    overflow: hidden;
+  }
+

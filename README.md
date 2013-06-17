@@ -1,4 +1,4 @@
-ranagama
-========
+wodrs
+=====
 
-Anagrams game
+Rolling word game
