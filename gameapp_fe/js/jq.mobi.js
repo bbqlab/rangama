@@ -1490,7 +1490,6 @@ if (!window.jq || typeof (jq) !== "function") {
                 options.success.call(context, data);
             };
             script.src = options.url.replace(/=\?/, '=' + callbackName) +options.data;
-            console.log(script);
             if(options.error)
             {
                script.onerror=function(){
@@ -1573,7 +1572,6 @@ if (!window.jq || typeof (jq) !== "function") {
                             settings.dataType = "text/html";
                             break;
                         case "jsonp":
-                            console.log('jsonp ajax call');
                             return $.jsonP(opts);
                             break;
                     }
@@ -1675,9 +1673,10 @@ if (!window.jq || typeof (jq) !== "function") {
         * @param {Function} success
         * @title $.get(url,success)
         */
-        $.get = function(url, success) {
+        $.get = function(url, data,success) {
             return this.ajax({
                 url: url,
+                data: data,
                 success: success
             });
         };

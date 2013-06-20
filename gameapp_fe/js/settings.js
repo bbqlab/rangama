@@ -4,7 +4,7 @@ App.prototype.load_settings = function()
   // is encoded in JSON
   //console.log("LOAD SETTINGS");
   var default_settings = { 
-                            backend: ['http://be.wodrs.com/wodrs/',false],
+                            backend: ['http://localhost/rangama_be/gameapp/',false],
                             log_backend: ['http://192.168.1.123/bestone/log_message/',false],
                             username: ['',false],
                             password: ['',false],

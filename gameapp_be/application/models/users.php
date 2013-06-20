@@ -65,17 +65,16 @@ class Users extends BaseEntity
         $game->score2 = $game->score1;
         $game->score1 = $userScore;
       }
-
+       
       $player1 = new Users($game->player1);
-      $player2 = new Users($game->player2);
-
       $game->player1 = $player1->username;
-      $game->player2 = $player2->username;
-
       $game->player1_img = $player1->image;
+       
+      $player2 = new Users($game->player2);
+      $game->player2 = $player2->username;
       $game->player2_img = $player2->image;
 
-      if($game->score2< 0 and $game->score1 >= 0)
+      if($game->score2 < 0 and $game->score1 >= 0)
       {
         $game->state = 'running_opponent';
       }
@@ -101,7 +100,7 @@ class Users extends BaseEntity
       $this->created = date("Y-m-d H:i:s");
     }
   
-    $user->ip = $this->input->ip_address();
+//    $user->ip = $this->input->ip_address();
     parent::save();
   }
 }

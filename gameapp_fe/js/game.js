@@ -18,10 +18,9 @@ function RangamaGame(id){
   this.audio_error.load();
   this.audio_panic = new Audio('audio/panic.wav');
   this.audio_panic.load();
-
-  this.audio_gong = new Audio('audio/gong.wav');
+  this.audio_gong = new Audio('audio/panic.wav');
   this.audio_gong.load();
-}
+};
 
 RangamaGame.prototype.start = function() {
 //  app.log("Dentro start del game!");
@@ -29,13 +28,10 @@ RangamaGame.prototype.start = function() {
   this.populate_list();
   this.bind_events();
   window.scrollTo(0,0);
-
+  console.log('making word sortable');
+  jQuery('.sortable').sortable();
   this.game_interval = window.setInterval( this.timer_tick, 1000 );
-
   window.scrollTo(0,0);
-  this.words_slider.addClass('animate');
-  setTimeout(app.focus_keyboard, 20);
-
 };
 
 

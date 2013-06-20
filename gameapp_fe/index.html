@@ -32,6 +32,14 @@
     <script src="js/jq.mobi.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/jq.ui.js" type="text/javascript" charset="utf-8"></script>
 
+    <script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ui.touch-punch.min.js"></script>
+    <script type='text/javascript'>
+      $.noConflict();
+      var $ = window.jq;
+    </script>
+
 
     <script>
       $.ui.autoLaunch = true;
@@ -39,6 +47,7 @@
     <script src="js/jq.template.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/jq.desktopBrowsers.js" type="text/javascript" charset="utf-8"></script>
 
+     
     <script src="js/app.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/log.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/settings.js" type="text/javascript" charset="utf-8"></script>
@@ -66,11 +75,6 @@
 
 
       <div id='wodrs_title'>
-        <span class='red'>W</span>
-        <span class='orange'>o</span>
-        <span class='yellow'>d</span>
-        <span class='lgreen'>r</span>
-        <span class='green'>s</span>
       </div>
 
       <div id='content'>
@@ -136,27 +140,18 @@
             <div class='game_score right'>0/0 (0)</div>
             <div class='game_timer left'>1:00</div>
           </div>
-          <input type='text' id='typing'>
-          <div id='wrong_letters' class='letter_fader right'></div>
-          <div id='correct_letters' class='letter_fader left'></div>
-          <div id="words_slider">
-            <div class='word' id='word_0'></div>
-            <div class='word' id='word_1'></div>
-            <div class='word' id='word_2'></div>
-            <div class='word' id='word_3'></div>
-            <div class='word' id='word_4'></div>
-            <div class='word' id='word_5'></div>
-          </div>
-<!--          <a href='focus_keyboard' id='keyboard_icon'><img src='css/keyboard.png'></a>-->
-          <div class='typer'>
-            <div class='word_typer'>
-              <span class='inner_span'>
-                <i class='iword'>...</i>
-                <div class='last_word'></div>
-              </span>
-            </div>
-            <div class='hint'>Write!</div>
-          </div>
+
+          <ul id='anagram_box' class='sortable'>
+            <li class='letter' id='l0'>A</li>
+            <li class='letter' id='l1'>N</li>
+            <li class='letter' id='l2'>A</li>
+            <li class='letter' id='l3'>G</li>
+            <li class='letter' id='l4'>R</li>
+            <li class='letter' id='l5'>A</li>
+            <li class='letter' id='l6'>M</li>
+            <li class='letter' id='l7'>M</li>
+            <li class='letter' id='l8'>A</li>
+          </ul>
         </div>
 
         <div class='panel' id='game_info' title='Game' data-header='none'

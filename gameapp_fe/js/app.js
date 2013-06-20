@@ -2,15 +2,34 @@ function App()
 {
   this.state = 0;          // using this to know if i'm ready to start application
   this.online = false;
+  this.templates = {};
   
   /* load templates */
-  this.views = ['game_row','results','game_info','games_list','topten_row','settings'];
+  this.views = ['game_row','results','game_info','topten_row','settings'];
   App.prototype.load_views = function() {
+    return;
     $.each(this.views, function(index, view) { 
-      $.get('views/' + view + '.js', function(data) {
+      $.ajax('views/' + view + '.js', function(data) {
         $('body').append('<script id="view_' + view + '" type="text/html">' + data + '</script>');
       });
     });
+  }
+
+  App.prototype.render = function(id, tpl, params, callback) {
+    if(this.templates[tpl])
+    {
+      $.ui.updateContentDiv(id,$.template(tpl,params));
+      if(callback) callback();
+    }
+    else
+    {
+      $.get('views/' + tpl + '.js' , {}, function(data) {
+        app.templates[tpl] = data;
+        $('body').append('<script id="' + tpl + '" type="text/html">' + data + '</script>');
+        $.ui.updateContentDiv(id,$.template(tpl,params));
+        if(callback) callback();
+      });
+    }
   }
 
   App.prototype.try_to_start = function()
@@ -143,7 +162,6 @@ app.main = function(){
   console.log('main');
   if(app.username != '' && app.password != '')
   {
-    console.log('dsadsa');
     if(!app.is_logged())
     {
       app.login(true, function() {
@@ -164,15 +182,12 @@ app.main = function(){
     }
   }
   else {
-    console.log(app.facebook_user);
     if(app.is_facebook_user())
     {
-      console.log('fb returning user try to auth');
        app.facebook_login();
     }
     else
     {
-      console.log('passing here');
       $.ui.loadContent('#login', false, false);
     }
   }
@@ -188,10 +203,12 @@ app.show_game_list = function() {
 app.fill_game_list = function(games) {
   var html = '';
   app.game_list=games;
-  $.ui.updateContentDiv('#game_list',$.template('view_games_list',{ games: app.game_list }));
-  $.ui.loadContent('#game_list', false, false);
-  $('#wodrs_title').addClass('wodrs_title_animation');
-  window.scrollTo(0,1);
+//  $.ui.updateContentDiv('#game_list',$.template('view_games_list',{ games: app.game_list }));
+  app.render('#game_list', 'view_games_list', { games:app.game_list }, function() {
+    $.ui.loadContent('#game_list', false, false);
+    $('#wodrs_title').addClass('wodrs_title_animation');
+    $.ui.scrollToTop();
+  });
 };
 
 
@@ -263,13 +280,15 @@ app.check_games = function() {
 };
 
 app.start_game = function(game_id) {
-  window.scrollTo(0,1);
-  $('#wodrs_title').addClass('title_out');
+  console.log('start');
+  $.ui.scrollToTop();
+  console.log('start2');
+//  $('#wodrs_title').addClass('title_out');
     
-  app.current_game = new WodrsGame(game_id);
+  app.current_game = new RangamaGame(game_id);
   app.current_game.start();
   $.ui.loadContent('#game_play',false,false);
-  window.scrollTo(0,1);
+  $.ui.scrollToTop();
 };
 
 app.stop_game = function() {
@@ -369,7 +388,6 @@ app.auth_facebook_login = function(auth, callback) {
     $.getJSON(app.backend + 'facebook_login', data, function(res) {
       app.token = res.data.token;
       app.facebook_user = 1;
-      console.log(user);
       app.facebook_id = user.id;
       localStorage.setItem('token', app.token);
       localStorage.setItem('username', user.name);
@@ -392,12 +410,10 @@ app.logout = function() {
 
   app.token = '';
   app.facebook_user = 0;
-  console.log(app.facebook_user);
   $.ui.loadContent('#login', false, false);
 };
 
 app.send_results = function(game, stats, callback){
-  console.log(game);
   $.getJSON( app.backend + 'send_results', 
             { game_id: game.id, stats: stats, token: app.token }, 
             function(res){
@@ -454,8 +470,10 @@ app.show_game_info = function(game_id){
 
   var game = app.get_game(game_id);
   game.facebook_user = app.facebook_user;
-  $('#game_info').html($.template('view_game_info',{ game: game }));
-  $.ui.loadContent('#game_info');
+//  $('#game_info').html($.template('view_game_info',{ game: game }));
+  app.render('#game_info', 'view_game_info', { game:game }, function() {
+    $.ui.loadContent('#game_info');
+  });
 };
 
 app.settings = function(){
@@ -463,15 +481,17 @@ app.settings = function(){
   $.getJSON(app.backend + 'get_user_settings', {token: app.token}, function(res) {
       res.data.facebook_user = app.facebook_user;
       res.data.facebook_id = app.facebook_id;
-      $('#settings').html($.template('view_settings',{ settings: res.data }));
-      $.ui.loadContent('#settings');
+//      $('#settings').html($.template('view_settings',{ settings: res.data }));
+      app.render('#settings', 'view_settings', { settings:res.data }, function() {
+        $.ui.loadContent('#settings');
 
-      $('.wodrs_avatar').click(function(ev) {
-        console.log($(this).attr('src'));
-        $('.wodrs_avatar_selected').removeClass('wodrs_avatar_selected');
-        $(this).addClass('wodrs_avatar_selected');
-        $.getJSON(app.backend + 'update_avatar', {token:app.token,
-                                               url:$(this).attr('src')}, function(res) {});
+        $('.wodrs_avatar').click(function(ev) {
+          console.log($(this).attr('src'));
+          $('.wodrs_avatar_selected').removeClass('wodrs_avatar_selected');
+          $(this).addClass('wodrs_avatar_selected');
+          $.getJSON(app.backend + 'update_avatar', {token:app.token,
+                                                 url:$(this).attr('src')}, function(res) {});
+        });
       });
   });
 }
@@ -502,7 +522,3 @@ function randomString(len, charSet) {
 }
 
 
-app.focus_keyboard = function(){
-  app.current_game.typing[0].click();
-  app.current_game.typing[0].focus();
-};

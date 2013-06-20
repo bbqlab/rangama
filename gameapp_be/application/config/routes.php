@@ -38,7 +38,7 @@
 |
 */
 
-$route['default_controller'] = "wodrs";
+$route['default_controller'] = "gameapp";
 $route['404_override'] = '';
 
 

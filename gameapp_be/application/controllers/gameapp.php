@@ -11,8 +11,8 @@ class GameApp extends CI_Controller {
     $username = $this->input->get('username'); 
     $password = $this->input->get('password'); 
 
-    Wodrs::log("Logging in $username");
-    Wodrs::log("Logging in $password");
+    GameApp::log("Logging in $username");
+    GameApp::log("Logging in $password");
 
     $user = new Users();
     $response = array('error'=> true,
@@ -40,22 +40,22 @@ class GameApp extends CI_Controller {
     $data = $this->input->get();
     $response = array('error'=> true,
                       'data'=> 'Authentication error');
-    Wodrs::log('auth fb');
-    Wodrs::log($data);
+    GameApp::log('auth fb');
+    GameApp::log($data);
 
     $user = new Users();
     $user->loadFromFacebookId($data['userID']);
 
     if($user->isValid())  // already registered
     {
-      Wodrs::log('facebook returning user');
+      GameApp::log('facebook returning user');
       $user->token = $data['accessToken'];
       $response['error'] = false;
       $response['data'] = array('token'=> $user->token);
     }
     else  // new user
     {
-      Wodrs::log('facebook new user');
+      GameApp::log('facebook new user');
       $user->username = $data['name'];
       $user->password = '';
       $user->image = 'http://graph.facebook.com/'. $data['userID'] .'/picture?type=square';
@@ -117,7 +117,7 @@ class GameApp extends CI_Controller {
     $user = new Users();
     $user->loadFromToken($token);
 
-    Wodrs::log("Requesting game for " . $user->username);
+    GameApp::log("Requesting game for " . $user->username);
     $response = array('error'=> true, 'data' => '');
     
     $queue = new Queue();
@@ -125,13 +125,13 @@ class GameApp extends CI_Controller {
 
     if($queue->count($user->usersId) > 0)
     {
-      Wodrs::log('Player found');
+      GameApp::log('Player found');
       // add new player
       $gameInfo = $queue->pop($user->usersId);
 
-      Wodrs::log($gameInfo);
+      GameApp::log($gameInfo);
       $game->load($gameInfo->gamesId);
-      Wodrs::log($game);
+      GameApp::log($game);
       $game->player2 = $user->usersId;
       $game->state = 'running';
       $game->save();
@@ -142,7 +142,7 @@ class GameApp extends CI_Controller {
     }
     else
     {
-      Wodrs::log('Player not found: enqueue');
+      GameApp::log('Player not found: enqueue');
       // player in the queue
       $game->init();
       $game->player1 = $user->usersId;
@@ -157,12 +157,25 @@ class GameApp extends CI_Controller {
     $this->response($response);
   }
 
+  public function template()
+  {
+    $response = array('error' => false, 
+                      'data' => array('tpl' => ''));
+
+    GameApp::log('templating');
+    $tpl = $this->input->get('name');
+    GameApp::log($tpl);
+
+    $this->response($response);
+  }
+
   public function list_games()
   {
     $token = $this->input->get('token'); 
     $games = array(
       'pending' => array(),
       'running' => array(),
+      'topten' => array(),
       'running_opponent' => array(),
       'completed' => array()
     );
@@ -172,9 +185,9 @@ class GameApp extends CI_Controller {
 
     $user = new Users();
     $user->loadFromToken($token);
-    Wodrs::log('loading user from token ' . $token);
-    Wodrs::log($user->db->last_query());
-    Wodrs::log($user);
+    GameApp::log('loading user from token ' . $token);
+    GameApp::log($user->db->last_query());
+    GameApp::log($user);
     if($user->usersId != '')
     {
       $games = $user->listGames();
@@ -182,7 +195,7 @@ class GameApp extends CI_Controller {
       $game = new Games();
 
       $games['topten'] = $game->getTopTen();
-      Wodrs::log($games);
+      GameApp::log($games);
       $response['data'] = array('games' => $games);
     }
     $this->response($response);
@@ -209,7 +222,7 @@ class GameApp extends CI_Controller {
 
     $user = new Users();
     $user->loadFromToken($token);
-    Wodrs::log("Result {$user->username} for $gamesId: $score"); 
+    GameApp::log("Result {$user->username} for $gamesId: $score"); 
 
     if($user->usersId != '')
     {
