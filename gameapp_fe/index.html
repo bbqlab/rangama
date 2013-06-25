@@ -23,6 +23,8 @@
     <meta property="og:image" content=""/>
     <meta property="og:image:secure_url" content=""/>
 
+    <link rel="stylesheet" href="css/jq.console.css" type="text/css" media="screen" charset="utf-8">
+
     <link href="public/images/rangama_icon.png" type="image/x-icon" rel="icon" />
     <link rel="stylesheet" href="css/jq.ui.css" type="text/css" media="screen" charset="utf-8">
     <link rel="stylesheet" href="css/icons.css" type="text/css" media="screen" charset="utf-8">
@@ -31,23 +33,16 @@
     
     <script src="js/jq.mobi.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/jq.ui.js" type="text/javascript" charset="utf-8"></script>
-
-    <script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/jquery.ui.touch-punch.min.js"></script>
-    <script type='text/javascript'>
-      $.noConflict();
-      var $ = window.jq;
-    </script>
-
-
+    <script src="js/jq.sortable.js" type="text/javascript" charset="utf-8"></script>
+    
+    <script type="text/javascript" src="js/jq.console.js"></script>
     <script>
       $.ui.autoLaunch = true;
     </script>
+
     <script src="js/jq.template.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/jq.desktopBrowsers.js" type="text/javascript" charset="utf-8"></script>
 
-     
     <script src="js/app.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/log.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/settings.js" type="text/javascript" charset="utf-8"></script>
@@ -74,47 +69,25 @@
 
 
 
-      <div id='wodrs_title'>
-      </div>
-
       <div id='content'>
-      <div class='ads' id='<ads_left></ads_left>' >
-        <script type="text/javascript"><!--
-          if(window.innerWidth>=850){
-            google_ad_client = "ca-pub-9759098288036220";
-            /* wodrs */
-            google_ad_slot = "4810062623";
-            google_ad_width = 120;
-            google_ad_height = 600; }
-            //--> 
-        </script>
-        <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script> 
-      </div>
 
-      <div class='ads' id='ads_right'>
-        <script type="text/javascript"><!--
-          if(window.innerWidth>=850){
-            google_ad_client = "ca-pub-9759098288036220";
-            /* wodrs */
-            google_ad_slot = "4810062623";
-            google_ad_width = 120;
-            google_ad_height = 600; }
-            //--> 
-        </script>
-        <script type="text/javascript"  src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script> 
-      </div>
+        <div class='ads' id='<ads_left></ads_left>' >
+        </div>
+
+        <div class='ads' id='ads_right'>
+        </div>
 
 
-      <div class='panel' id='register' title='Wodrs sign in' data-header='none' data-footer='none'>
-        <div class='panel_header'></div>
-        <div class='panel_content'>
-          <input class='jq-ui-forms' id='reg_username' placeholder='Choose a username'/>
-          <input class='jq-ui-forms' type='password' id='reg_password' placeholder='Choose a password'/>
-          <div class='center'>
-            <a class='button' href='register'/>Sign in</a>
+        <div class='panel' id='register' title='Wodrs sign in' data-header='none' data-footer='none'>
+          <div class='panel_header'></div>
+          <div class='panel_content'>
+            <input class='jq-ui-forms' id='reg_username' placeholder='Choose a username'/>
+            <input class='jq-ui-forms' type='password' id='reg_password' placeholder='Choose a password'/>
+            <div class='center'>
+              <a class='button' href='register'/>Sign in</a>
+            </div>
           </div>
         </div>
-      </div>
 
         <div class='panel' id='login' title='Wodrs login' data-header='none' data-footer='none' true=selected>
             <div class='panel_header'></div>
@@ -135,24 +108,6 @@
         <div class='panel' id='game_list' title='Wodrs' data-footer='none' data-header='none'>
         </div>
 
-        <div class='panel' id='game_play' data-header='none' data-footer='none' style='overflow: hidden;'>
-          <div class='panel_header'>
-            <div class='game_score right'>0/0 (0)</div>
-            <div class='game_timer left'>1:00</div>
-          </div>
-
-          <ul id='anagram_box' class='sortable'>
-            <li class='letter' id='l0'>A</li>
-            <li class='letter' id='l1'>N</li>
-            <li class='letter' id='l2'>A</li>
-            <li class='letter' id='l3'>G</li>
-            <li class='letter' id='l4'>R</li>
-            <li class='letter' id='l5'>A</li>
-            <li class='letter' id='l6'>M</li>
-            <li class='letter' id='l7'>M</li>
-            <li class='letter' id='l8'>A</li>
-          </ul>
-        </div>
 
         <div class='panel' id='game_info' title='Game' data-header='none'
              data-footer='none' style=''>
@@ -165,6 +120,16 @@
 
         <div class='panel' id='results' title='Finish!' data-header='none'
              data-footer='none' style='overflow: hidden;' >
+
+        </div>
+        <div class='panel' id='game_play' data-header='none' data-footer='none' style='overflow: hidden;'>
+          <div class='panel_header'>
+            <div class='game_score right'>0/0 (0)</div>
+            <div class='game_timer left'>1:00</div>
+          </div>
+
+          <div id='anagram_box'>
+          </div>
 
         </div>
     </div>

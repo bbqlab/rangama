@@ -561,7 +561,7 @@ if (!window.jq || typeof (jq) !== "function") {
             empty: function() {
                 for (var i = 0; i < this.length; i++) {
                     $.cleanUpContent(this[i], false, true);
-                    this[i].innerHTML = '';
+                    this[i].textContent = '';
                 }
                 return this;
             },
@@ -1167,6 +1167,7 @@ if (!window.jq || typeof (jq) !== "function") {
                             break;
                     }
                 }
+                
                 return this.setupOld($(unique(elems)).filter(selector));
             },
              /**
@@ -1489,7 +1490,7 @@ if (!window.jq || typeof (jq) !== "function") {
                 delete window[callbackName];
                 options.success.call(context, data);
             };
-            script.src = options.url.replace(/=\?/, '=' + callbackName) +options.data;
+            script.src = options.url.replace(/=\?/, '=' + callbackName);
             if(options.error)
             {
                script.onerror=function(){
@@ -1497,7 +1498,7 @@ if (!window.jq || typeof (jq) !== "function") {
                   options.error.call(context, "", 'error');
                }
             }
-            $('body').append(script);
+            $('head').append(script);
             if (options.timeout > 0)
                 abortTimeout = setTimeout(function() {
                     options.error.call(context, "", 'timeout');
@@ -1534,6 +1535,7 @@ if (!window.jq || typeof (jq) !== "function") {
         $.ajax = function(opts) {
             var xhr;
             try {
+				
                 var settings = opts || {};
                 for (var key in $.ajaxSettings) {
                     if (typeof(settings[key]) == 'undefined')
@@ -1549,6 +1551,7 @@ if (!window.jq || typeof (jq) !== "function") {
                
                 if(!('async' in settings)||settings.async!==false)
                     settings.async=true;
+                
                 if (!settings.dataType)
                     settings.dataType = "text/html";
                 else {
@@ -1596,6 +1599,7 @@ if (!window.jq || typeof (jq) !== "function") {
                 var abortTimeout;
                 var context = settings.context;
                 var protocol = /^([\w-]+:)\/\//.test(settings.url) ? RegExp.$1 : window.location.protocol;
+				
 				//ok, we are really using xhr
 				xhr = new window.XMLHttpRequest();
 				
@@ -1657,6 +1661,7 @@ if (!window.jq || typeof (jq) !== "function") {
                 xhr.send(settings.data);
             } catch (e) {
             	// General errors (e.g. access denied) should also be sent to the error callback
+                console.log(e);
             	settings.error.call(context, xhr, 'error', e);
             }
             return xhr;
@@ -1673,10 +1678,9 @@ if (!window.jq || typeof (jq) !== "function") {
         * @param {Function} success
         * @title $.get(url,success)
         */
-        $.get = function(url, data,success) {
+        $.get = function(url, success) {
             return this.ajax({
                 url: url,
-                data: data,
                 success: success
             });
         };

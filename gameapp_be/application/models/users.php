@@ -44,14 +44,12 @@ class Users extends BaseEntity
                            " player2 = '{$this->usersId}') AND " .
                            " state != 'completed'",'','',
                            array('date','DESC'));
-    Wodrs::log($game->db->last_query());
     $completed = $game->search("(player1 = '{$this->usersId}' OR " .
                                " player2 = '{$this->usersId}') AND " .
                                " state = 'completed'",6,'',
                                array('date','DESC'));
 
 
-    Wodrs::log($games);
     $games = array_merge($games, $completed);
 
     foreach($games as $game)

@@ -19,6 +19,7 @@ class GameApp extends CI_Controller {
                       'data'=> 'Authentication error');
 
     $user->loadFromUsername($username);
+    GameApp::log($user);
 
     if($user->password == $password and $user->isValid())
     {

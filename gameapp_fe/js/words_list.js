@@ -14,16 +14,25 @@ WordList.prototype.each = function(callback) {
 };
 
 WordList.prototype.load = function() {
-  this.dictionary = english_dictionary;
+  this.dictionary = italian_dictionary;
   this.n_dictionary_words = this.dictionary.length;
   this.init_current_words();
 };
 
 WordList.prototype.init_current_words = function() {
-
   this.words = this.take_dictionary_words(6);
-
+  console.log(this.words);
 };
+
+WordList.prototype.next_word = function() {
+  var word = this.words.pop();
+  if(this.words.length == 0)
+  {
+    this.init_current_words();
+  }
+
+  return word;
+}
 
 WordList.prototype.take_dictionary_words = function(n) {
   var i=0,id;
@@ -65,7 +74,6 @@ WordList.prototype.get_word = function(id) {
 };
 
 WordList.prototype.update_word = function(id) {
-
   this.words[id]=this.take_dictionary_words(1)[0];
 };
 

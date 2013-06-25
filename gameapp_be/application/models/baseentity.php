@@ -135,6 +135,8 @@ class BaseEntity extends CI_Model {
     $this->db->select('*')->from($this->table());
     $this->db->where(array( $attribute => $value ));
     $result = $this->db->get()->row();
+    GameApp::log($this->db->last_query());
+    GameApp::log($result);
     $this->initFromDB($result);
   }
 

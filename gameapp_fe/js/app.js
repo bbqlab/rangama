@@ -4,18 +4,9 @@ function App()
   this.online = false;
   this.templates = {};
   
-  /* load templates */
-  this.views = ['game_row','results','game_info','topten_row','settings'];
-  App.prototype.load_views = function() {
-    return;
-    $.each(this.views, function(index, view) { 
-      $.ajax('views/' + view + '.js', function(data) {
-        $('body').append('<script id="view_' + view + '" type="text/html">' + data + '</script>');
-      });
-    });
-  }
 
   App.prototype.render = function(id, tpl, params, callback) {
+    
     if(this.templates[tpl])
     {
       $.ui.updateContentDiv(id,$.template(tpl,params));
@@ -23,7 +14,7 @@ function App()
     }
     else
     {
-      $.get('views/' + tpl + '.js' , {}, function(data) {
+      $.get('views/' + tpl + '.js' , function(data) {
         app.templates[tpl] = data;
         $('body').append('<script id="' + tpl + '" type="text/html">' + data + '</script>');
         $.ui.updateContentDiv(id,$.template(tpl,params));
@@ -46,7 +37,6 @@ function App()
   /* SETUP APPLICATION (set landscape orientation, click handler, fill background...) */
   App.prototype.setup = function()
   {
-    this.load_views();
 
     if(typeof AppMobi.device!='undefined')
     {
@@ -78,11 +68,9 @@ function App()
         if (response.status === 'connected') {
           app.auth_facebook_login(response);
         } else if (response.status === 'not_authorized') {
-          console.log('login 1');
           FB.login(function(){},{scope: 'publish_actions'});
         } else {
           FB.login(function(){},{scope: 'publish_actions'});
-          console.log('login 2');
         }
       });
 
@@ -158,8 +146,8 @@ function onUpdateAvailable(evt)
 }
 
 app.main = function(){
+  $.console.init({only_on_mobile:true});
   app.load_settings();
-  console.log('main');
   if(app.username != '' && app.password != '')
   {
     if(!app.is_logged())
@@ -178,6 +166,7 @@ app.main = function(){
     }
     else
     {
+      
       app.show_game_list();
     }
   }
@@ -280,11 +269,8 @@ app.check_games = function() {
 };
 
 app.start_game = function(game_id) {
-  console.log('start');
   $.ui.scrollToTop();
-  console.log('start2');
 //  $('#wodrs_title').addClass('title_out');
-    
   app.current_game = new RangamaGame(game_id);
   app.current_game.start();
   $.ui.loadContent('#game_play',false,false);
@@ -370,7 +356,6 @@ app.facebook_login = function() {
     } else {
       // the user isn't logged in to Facebook or hasn't auth 
       FB.login(function(){},{scope: 'publish_actions'});
-      console.log('login 3');
     }
   });
 };
@@ -417,7 +402,6 @@ app.send_results = function(game, stats, callback){
   $.getJSON( app.backend + 'send_results', 
             { game_id: game.id, stats: stats, token: app.token }, 
             function(res){
-              console.log(res);
               app.current_game.is_personal_record = res.data.is_personal_record;
               app.current_game.is_topten_record = res.data.is_topten_record;
               callback(game);

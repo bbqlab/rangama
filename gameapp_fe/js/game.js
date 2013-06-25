@@ -2,7 +2,7 @@ function RangamaGame(id){
   this.id = id;
   this.words = [];
   this.current_word = [];
-  this.game_time = 30;//app['game_time'];
+  this.game_time = 180;//app['game_time'];
   this.rules = { letter_weight: 10 };
   this.score = 0;
 
@@ -23,15 +23,12 @@ function RangamaGame(id){
 };
 
 RangamaGame.prototype.start = function() {
-//  app.log("Dentro start del game!");
   this.word_list = new WordList();
-  this.populate_list();
+  var word = this.next_word();
+  this.draw_word(word);
   this.bind_events();
-  window.scrollTo(0,0);
-  console.log('making word sortable');
-  jQuery('.sortable').sortable();
-  this.game_interval = window.setInterval( this.timer_tick, 1000 );
-  window.scrollTo(0,0);
+  $.ui.scrollToTop();
+//  this.game_interval = window.setInterval( this.timer_tick, 1000 );
 };
 
 
@@ -39,23 +36,22 @@ RangamaGame.prototype.timer_tick = function() {
   var game = app.current_game;
   var game_time = --game.game_time;
 
-  if(game_time==0)
-  {
-    game.audio_gong.play();
+  /* game over */
+  if(game_time==0) {
     app.stop_game(); return; 
   };
-
-  if(game_time<10)
-  {
+  
+  /* bouncing timer */
+  if(game_time<10) {
     if(game_time%2)
       $('.game_timer').removeClass('bounce');
     else
       $('.game_timer').addClass('bounce');
   }
-
+  
   if(game_time==10)
   {
-    game.audio_panic.play();
+//    game.audio_panic.play();
   }
 
   $('.game_timer').html('0:'+game_time);
@@ -63,8 +59,8 @@ RangamaGame.prototype.timer_tick = function() {
 
 RangamaGame.prototype.stop = function() {
     window.clearInterval(this.game_interval);
-    $('#words_slider').removeClass('animate');
     var game = app.current_game;
+
     var precision = (100*game.n_key_matched/game.n_key_pressed);
     var stats_n_key_pressed = (100*game.n_key_pressed/600);
     var stats_n_key_matched = (100*game.n_key_matched/360);
@@ -121,38 +117,85 @@ RangamaGame.prototype.stop = function() {
     });
 };
 
+RangamaGame.prototype.next_word = function() {
+  this.real_word = this.word_list.next_word().split("");
+  this.current_word = this.shuffle_word(this.real_word);
 
-RangamaGame.prototype.check_word = function(letter) {
-  var word = this.current_word.join('');
-  var id = this.word_list.check_word(word);
-  var new_word;
-  var audio_ok;
+  return this.current_word;
+};
 
-  this.n_key_pressed++;
+RangamaGame.prototype.shuffle_word = function(real_word) {
+  //+ Jonas Raoni Soares Silva
+  //@ http://jsfromhell.com/array/shuffle [v1.0]
+  function shuffle(o){ //v1.0
+      for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+      return o;
+  }; 
 
-  // the word matched !! 
-  if( id>=0 )
-  {
-    this.word_hit(word);
-    new_word = this.word_list.get_word(id);
-    $('#word_'+id).html(new_word);
-    audio_ok = this.random_ok();
-    audio_ok.play();
-//    this.add_letter_fader(letter, 'correct');
-    this.clear_current_word('correct');
+  var word = $.extend([],real_word);
+
+  var idx1 = Math.floor(Math.random() * (word.length + 1));
+      idx2 = Math.floor(Math.random() * (word.length + 1));;
+  var idx1 = 0,
+      idx2 = 1;
+  
+  word.splice(idx1, 1);
+  word.splice(idx2, 1);
+
+  word = shuffle(word);
+
+  word.splice(idx1, 0, real_word[idx1]);
+  if(idx2 >= idx1) idx2++;
+  word.splice(idx2, 0, real_word[idx2]);
+  
+  return word;
+};
+
+RangamaGame.prototype.draw_word = function(word) {
+  var that = this;
+  app.render('#anagram_box', 'view_anagram_word', { word: word }, function() {
+    $('.sortable').sortable({
+      after_drag: that.change_letters
+    });
+
+    that.check_word();
+  });
+};
+
+RangamaGame.prototype.change_letters = function(dragged, overlap) {
+  if(overlap < 0) return;            
+  var game = app.current_game;
+  var temp = game.current_word[dragged];
+  game.current_word[dragged] = game.current_word[overlap];
+  game.current_word[overlap] = temp;
+
+  $('.l' + dragged).attr('id','l' + overlap);
+
+  game.check_word();
+};
+
+RangamaGame.prototype.check_word = function() {
+  var correct = true;
+
+  for (var i = 0; i < this.current_word.length; i++) {
+    if(this.current_word[i] == this.real_word[i]) {
+      if(!$('.l'+i).hasClass('correct_letter')) {
+        $('.l'+i).addClass('correct_letter');
+      }
+    }
+    else
+    {
+      correct = false;
+      if($('.l'+i).hasClass('correct_letter')) {
+        $('.l'+i).removeClass('correct_letter');
+      }
+    }
   }
-  else if(id==-1) // right letter on uncompleted word
+  
+  if(correct)
   {
-//    this.add_letter_fader(letter, 'correct');
+    this.word_hit();
   }
-  else if(id==-2) // wrong letter
-  {
-//    this.add_letter_fader(letter, 'wrong');
-    this.audio_error.play();
-    this.clear_current_word('wrong');
-  }
-
-  $('.game_score').html(this.score);
 };
 
 
@@ -161,86 +204,32 @@ RangamaGame.prototype.random_ok = function() {
   return this.audio_ok[rand];
 }
 
-RangamaGame.prototype.word_hit = function(word) {
+RangamaGame.prototype.word_hit = function() {
+  var word = this.current_word.join('');
   this.score += word.length*this.rules.letter_weight;
   this.n_key_matched+=word.length;
   $('.game_score').html(this.score);
+  var word = this.next_word();
+  this.draw_word(word);
 };
 
-RangamaGame.prototype.current_word_out = function(type) {
-  var word_pos = $('.word_typer').offset();
-
-  console.log(word_pos);
-  $('.last_word').css({ top: word_pos.top, 
-                        left: word_pos.left});
-
-//  $('.last_word').css('top:'
-  console.log($('.iword').html());
-
-  $('.last_word').removeClass('last_word_out_' + type);
-  $('.last_word').html($('.iword').html());
-  $('.last_word').addClass('last_word_out_' + type);
-
-  setTimeout(function() {
-  //  $('.last_word').html('');
-    $('.last_word').removeClass('last_word_out_'+type);
-  }, 1000);
+RangamaGame.prototype.current_word_out = function() {
 };
 
 RangamaGame.prototype.clear_current_word = function(type) {
-  this.current_word_out(type);
+  this.current_word_out();
   this.current_word = [];
-  this.refresh_word();
+  this.next_word();
 };
 
-RangamaGame.prototype.add_letter = function(letter) {
-  this.current_word.push(letter);
-  this.refresh_word();
-};
 
 RangamaGame.prototype.refresh_word = function() {
-  if(this.current_word.length > 0)
-  {
-    $('.hint').css('opacity',0);
-    $('.iword').html(this.current_word.join(''));
-  }
-  else
-  {
-    $('.iword').html("...");
-    $('.hint').css('opacity',1);
-  }
 };
 
 RangamaGame.prototype.bind_events = function() {
-  $('#typing').on('keydown',this.key_down );
 };
 
 RangamaGame.prototype.unbind_events = function() {
-  $('#typing').off('keydown', this.key_down);
 };
 
-/* 
-RangamaGame.prototype.accelerate_slider = function() {
-    if(app.current_game.game_time>1) 
-    {
-      this.style.webkitAnimationPlayState = "paused";
-      this.style.webkitAnimationDuration = ((app.current_game.game_time/10)+1).toFixed(2) + 's';
 
-      this.style.webkitAnimationPlayState = "running";
-    }
-    else{
-      this.style.webkitAnimationPlayState = "paused";
-      this.style.webkitAnimationDuration = '7s';
-      this.style.webkitAnimationPlayState = "running";
-    }
-
-};*/
-
-
-RangamaGame.prototype.populate_list = function() {
-  
-  this.word_list.each( function(id,word){ 
-    $('#word_'+id).html(word);
-  });
-
-};
