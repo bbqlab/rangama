@@ -438,6 +438,10 @@ app.send_results_to_fb = function(type, game) {
 
 };
 
+app.skip_word = function() {
+  app.current_game.skip_word();
+};
+
 
 app.show_game_info = function(game_id){
   window.scrollTo(0,1);

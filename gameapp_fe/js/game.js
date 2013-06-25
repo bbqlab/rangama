@@ -210,6 +210,21 @@ RangamaGame.prototype.word_hit = function() {
   this.n_key_matched+=word.length;
   $('.game_score').html(this.score);
   var word = this.next_word();
+
+  $('.feedback').addClass('feedback_on');
+  var that = this;
+
+  function go_next()
+  {
+    $('.feedback').removeClass('feedback_on');
+    that.draw_word(word);
+  }
+
+  setTimeout(go_next, 1500);
+};
+
+RangamaGame.prototype.skip_word = function() {
+  var word = this.next_word();
   this.draw_word(word);
 };
 
