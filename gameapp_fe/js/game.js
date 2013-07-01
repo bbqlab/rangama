@@ -139,14 +139,14 @@ RangamaGame.prototype.shuffle_word = function(real_word) {
   var idx1 = 0,
       idx2 = 1;
   
-  word.splice(idx1, 1);
-  word.splice(idx2, 1);
+//  word.splice(idx1, 1);
+//  word.splice(idx2, 1);
 
   word = shuffle(word);
 
-  word.splice(idx1, 0, real_word[idx1]);
-  if(idx2 >= idx1) idx2++;
-  word.splice(idx2, 0, real_word[idx2]);
+//  word.splice(idx1, 0, real_word[idx1]);
+//  if(idx2 >= idx1) idx2++;
+//  word.splice(idx2, 0, real_word[idx2]);
   
   return word;
 };
