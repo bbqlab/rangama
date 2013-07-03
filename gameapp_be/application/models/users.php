@@ -29,6 +29,7 @@ class Users extends BaseEntity
   var $token;
   var $email;
   var $image;
+  var $facebookId;
 
   public function listGames()
   {
@@ -65,6 +66,14 @@ class Users extends BaseEntity
       }
        
       $player1 = new Users($game->player1);
+
+      $game->winner = false;
+      $game->completed = ($game->state == 'completed');
+
+      if($game->score1 > $game->score2) 
+      {
+        $game->winner = true;
+      }
       $game->player1 = $player1->username;
       $game->player1_img = $player1->image;
        
@@ -85,10 +94,21 @@ class Users extends BaseEntity
 
   public function getSettings()
   {
-    return array(
+    $settings = array(
       'username'  => $this->username,
-      'image'     => $this->image
+      'image'     => $this->image,
+      'image'     => $this->facebookId,
+      'available_avatars' => array()
     );
+
+    $settings['available_avatars'][] = 'public/avatars/default.png';
+
+    for($i = 1; $i < 6;$i++)
+    {
+      $settings['available_avatars'][] = 'public/avatars/avatar'.$i.'.png';
+    }
+
+    return $settings;
   }
 
   public function save()

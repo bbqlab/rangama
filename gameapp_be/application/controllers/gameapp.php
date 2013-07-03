@@ -181,6 +181,8 @@ class GameApp extends CI_Controller {
       'completed' => array()
     );
 
+
+
     $response = array('error' => false, 
                       'data' => array('games' => $games));
 
@@ -214,6 +216,25 @@ class GameApp extends CI_Controller {
     $response['data'] = $user->getSettings();
     $this->response($response);
   }
+
+  public function update_avatar()
+  {
+    $token = $this->input->get('token');
+    $url = $this->input->get('url');
+    $response = array('error' => true,
+                      'data' => array());
+
+    $user = new Users();
+    $user->loadFromToken($token);
+
+    if($user->isValid())
+    {
+      $user->image = $url;
+      $user->save();
+    }
+    $this->response($response);
+  }
+
 
   public function send_results()
   {

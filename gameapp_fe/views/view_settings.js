@@ -9,45 +9,25 @@
       </label>
       <div id='avatar_list'>
         <ul>
-           <%
-             var image_path = 'public/avatars/default.png';
-           %>
+          {{#each settings.available_avatars}}
             <li>
               <img class='wodrs_avatar 
-              <% if(settings.user.image == image_path) {%>
+              {{#equal settings.image  this}}
                 wodrs_avatar_selected
-              <%}%>'
-              src='<%=image_path%>'>
+              {{/equal}}' 
+              src='{{this}}'>
             </li>
-          <% for(var i=1; i<6; i++) { 
-            image_path = 'public/avatars/avatar'+i+'.png';
-          %>
+          {{/each}}
+
+          {{#if settings.facebook_user}}
             <li>
               <img class='wodrs_avatar 
-              <% if(settings.user.image == image_path) {%>
+              {{#equal settings.image image_path}}
                 wodrs_avatar_selected
-              <%}%>
-              ' src='<%=image_path%>'/>
+              {{/equal}}'
+              src='http://graph.facebook.com/{{settings.facebook_id}}/picture?type=small'>
             </li>
-
-
-          <%}
-
-
-          if(settings.facebook_user) { 
-            image_path = 'http://graph.facebook.com/'+app.facebook_id+'/picture?type=small';
-          %>
-            <li>
-              <img class='wodrs_avatar 
-              <% if(settings.user.image == image_path) {%>
-                wodrs_avatar_selected
-              <%}%>'
-              src='<%=image_path%>'>
-            </li>
-          <%}%>
-
-
-
+          {{/if}}
         </ul>
         <div style='clear:both'></div>
       </div>

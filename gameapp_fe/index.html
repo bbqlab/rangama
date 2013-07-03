@@ -14,118 +14,130 @@
     <!-- SEARCH ENGINE STUFF -->
     <meta name="description" content="">
     <meta name="keywords" content="game, words game, html5, css3, rotate, animation, challange, topten">
-    <meta name="author" content="Barbecue Studio">
+    <meta name="author" content="Barbecue Lab">
 
     <!-- SOCIAL STUFF -->
     <meta property='og:title' content='Rangama - Anagram this'/>
-    <meta property='og:url' content='http://rangama.com/'/>
+    <meta property='og:url' content='http://rangama.bbqlab.net/'/>
     <meta property='og:site_name' content='Rangama'/>
     <meta property="og:image" content=""/>
     <meta property="og:image:secure_url" content=""/>
-
-    <link rel="stylesheet" href="css/jq.console.css" type="text/css" media="screen" charset="utf-8">
-
+    
+    <!-- FAVICON -->
     <link href="public/images/rangama_icon.png" type="image/x-icon" rel="icon" />
-    <link rel="stylesheet" href="css/jq.ui.css" type="text/css" media="screen" charset="utf-8">
-    <link rel="stylesheet" href="css/icons.css" type="text/css" media="screen" charset="utf-8">
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8">
-    <link rel="stylesheet" href="css/progress.css" type="text/css" media="screen" charset="utf-8">
     
-    <script src="js/jq.mobi.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/jq.ui.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/jq.sortable.js" type="text/javascript" charset="utf-8"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="include/af.css/af.ui.css" type="text/css" media="screen" charset="utf-8">
     
-    <script type="text/javascript" src="js/jq.console.js"></script>
+    <link rel="stylesheet" href="skin/icons.css" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="skin/style.css" type="text/css" media="screen" charset="utf-8">
+    
+    <!-- APPFRAMEWORK -->
+    <script src="include/appframework.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- APPFRAMEWORK UI -->
+    <script src="include/af.ui/appframework.ui.js" type="text/javascript" charset="utf-8"></script>
+    <script src="include/af.ui/transitions/all.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- TEMPLATE ENGINE -->
+    <script src="include/handlebars.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- APPFRAMEWORK PLUGINS -->
+<!--    <script src="include/af.plugins/af.actionsheet.js" type="text/javascript" charset="utf-8" ></script>-->
+    <script src="include/af.plugins/af.css3animate.js" type="text/javascript" charset="utf-8" ></script>
+<!--    <script src="include/af.plugins/af.passwordBox.js" type="text/javascript" charset="utf-8" ></script>-->
+    <script src="include/af.plugins/af.scroller.js" type="text/javascript" charset="utf-8" ></script>
+<!--    <script src="include/af.plugins/af.selectBox.js" type="text/javascript" charset="utf-8" ></script>-->
+    <script src="include/af.plugins/af.touchEvents.js" type="text/javascript" charset="utf-8" ></script>
+    <script src="include/af.plugins/af.touchLayer.js" type="text/javascript" charset="utf-8" ></script>
+    <script src="include/af.plugins/af.popup.js" type="text/javascript" charset="utf-8" ></script>
+<!--    <script src="include/af.plugins/af.slidemenu.js" type="text/javascript" charset="utf-8" ></script>-->
+    
     <script>
-      $.ui.autoLaunch = true;
+      if(!((window.DocumentTouch && document instanceof DocumentTouch) 
+            || 'ontouchstart' in window)) {
+        var script = document.createElement("script");
+        script.src = "include/af.plugins/af.desktopBrowsers.js";
+        var tag = $("head").append(script);
+        $.os.android = true; //let's make it run like an android device
+        $.os.desktop = true;
+      }
+
+      //$.ui.autoLaunch = false;
     </script>
-
-    <script src="js/jq.template.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/jq.desktopBrowsers.js" type="text/javascript" charset="utf-8"></script>
-
-    <script src="js/app.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/log.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/settings.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/words_list.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/game.js" type="text/javascript" charset="utf-8"></script>
+    
+    <!-- APP -->
+    <script src="app/app.js" type="text/javascript" charset="utf-8"></script>
+    <script src="app/log.js" type="text/javascript" charset="utf-8"></script>
+    <script src="app/settings.js" type="text/javascript" charset="utf-8"></script>
+    <script src="app/words_list.js" type="text/javascript" charset="utf-8"></script>
+    <script src="app/game.js" type="text/javascript" charset="utf-8"></script>
     <script src="dictionaries/dict.js" type="text/javascript" charset="utf-8"></script>
 
   </head>
 
   <body>
-    <img style='display:none' src='public/images/wodrs_icon.png'/>
     <div id='fb_root'></div>
-
-    <div id='jQUi'>
-
-    <div id="splashscreen" class='ui-loader'>
-        <div class='panel_content'>
-          <br><br>
-          <p class='description'></p><br>
-          <script>setTimeout("$.ui.launch();",10000);</script>
-          <a class='button' onclick='$.ui.launch();' href=''>Go!</a>
-        </div>
-    </div>
-
-
-
+    <div id='afui'>
       <div id='content'>
 
-        <div class='ads' id='<ads_left></ads_left>' >
+        <!-- SPLASH -->
+        <div class='panel' id='game_splash' title='Settings'>
         </div>
-
-        <div class='ads' id='ads_right'>
-        </div>
-
-
-        <div class='panel' id='register' title='Wodrs sign in' data-header='none' data-footer='none'>
+ 
+        <!-- REGISTRATION -->
+        <div class='panel' id='register' title='Wodrs sign in'>
           <div class='panel_header'></div>
           <div class='panel_content'>
             <input class='jq-ui-forms' id='reg_username' placeholder='Choose a username'/>
             <input class='jq-ui-forms' type='password' id='reg_password' placeholder='Choose a password'/>
             <div class='center'>
-              <a class='button' href='register'/>Sign in</a>
+              <a class='button' href='#register'/>Sign in</a>
             </div>
           </div>
         </div>
-
-        <div class='panel' id='login' title='Wodrs login' data-header='none' data-footer='none' true=selected>
-            <div class='panel_header'></div>
-            <div class='panel_content'>
-              <input class='jq-ui-forms' id='login_username' placeholder='Username' value=''/>
-              <input class='jq-ui-forms' type='password' id='login_password' placeholder='Password' value=''/>
-              <div class='center'>
-                <a class='button' href='login'/>Login</a>
-                <a class='button' href='show_register'/>Sign in</a><br><br>
-                <a href='facebook_login'/>
-                   <img style='width:260px;' src='public/images/facebook.png'/>
-                </a>
-              </div>
-            </div>
+        
+        <!-- LOGIN -->
+        <div class='panel' id='login' title='Wodrs login' selected='true'>
+           <div class='panel_header'></div>
+           <div class='panel_content'>
+             <input class='jq-ui-forms' id='login_username' placeholder='Username' value=''/>
+             <input class='jq-ui-forms' type='password' id='login_password' placeholder='Password' value=''/>
+             <div class='center'>
+               <a href='login'/>Login</a>
+               <a href='show_register'/>Sign in</a><br><br>
+                 <a href='facebook_login'/>
+                  <img style='width:260px;' src='public/images/facebook.png'/>
+               </a>
+             </div>
+           </div>
         </div>
 
-
-        <div class='panel' id='game_list' title='Wodrs' data-footer='none' data-header='none'>
+        <!-- SETTINGS -->
+        <div class='panel' id='settings' title='Settings'>
+        </div>
+        
+        <!-- GAME LIST -->
+        <div class='panel' id='games_list' title=''>
         </div>
 
-
-        <div class='panel' id='game_info' title='Game' data-header='none'
-             data-footer='none' style=''>
+        <!-- GAMES RANKING  -->
+        <div class='panel' id='games_ranking' title=''>
         </div>
 
-        <div class='panel' id='settings' title='Settings' data-header='none'
-             data-footer='none' style=''>
-
+        <!-- GAME INFO -->
+        <div class='panel' id='game_info' title=''>
         </div>
 
-        <div class='panel' id='results' title='Finish!' data-header='none'
-             data-footer='none' style='overflow: hidden;' >
-
+        <!-- GAME RESULTS -->
+        <div class='panel' id='game_results' title=''>
         </div>
-        <div class='panel' id='game_play' data-header='none' data-footer='none' style='overflow: hidden;'>
+       
+        <!-- GAME PLAY -->
+        <div class='panel' id='game_play' title=''>
           <div class='panel_header'>
             <div class='next_word right'>
-              <a class='button' href='skip_word'>Skip</a>
+              <a class='button' href='#skip_word'>Skip</a>
             </div>
 
             <div class='feedback'>giusto!</div>
@@ -134,8 +146,7 @@
 
           <div id='anagram_box'>
           </div>
-
         </div>
-    </div>
-    </body>
+      </div>
+  </body>
 </html>
