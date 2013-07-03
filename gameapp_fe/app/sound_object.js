@@ -1,6 +1,6 @@
 //sound object works close to the same in appMobi and HTML5
 
-function objSound(soundFilePath) {
+function ObjSound(soundFilePath) {
 	this.path = soundFilePath;
 	this.tag = document.createElement("audio");
 	this.tag.setAttribute("preload","auto");

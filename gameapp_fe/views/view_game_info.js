@@ -1,7 +1,7 @@
 
 <div class='panel_header'>
     {{#equal game.state 'running'}}
-      {{#equal game.score -1}}
+      {{#equal game.score1 -1}}
         <a class='button right' href='start_game/{{game.gamesId}}'>PLAY!</a>
       {{/equal}}
     {{/equal}}

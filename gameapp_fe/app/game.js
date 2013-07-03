@@ -27,7 +27,7 @@ RangamaGame.prototype.start = function() {
   var word = this.next_word();
   this.draw_word(word);
   this.bind_events();
-  $.ui.scrollToTop();
+  $.ui.scrollToTop('#game_play');
 //  this.game_interval = window.setInterval( this.timer_tick, 1000 );
 };
 
@@ -164,6 +164,8 @@ RangamaGame.prototype.draw_word = function(word) {
 
 RangamaGame.prototype.change_letters = function(dragged, overlap) {
   if(overlap < 0) return;            
+  app.log('changing letters');
+  app.log(overlap + ' with ' + dragged);
   var game = app.current_game;
   var temp = game.current_word[dragged];
   game.current_word[dragged] = game.current_word[overlap];
@@ -176,7 +178,8 @@ RangamaGame.prototype.change_letters = function(dragged, overlap) {
 
 RangamaGame.prototype.check_word = function() {
   var correct = true;
-
+  console.log(this.real_word);
+  console.log(this.current_word);
   for (var i = 0; i < this.current_word.length; i++) {
     if(this.current_word[i] == this.real_word[i]) {
       if(!$('.l'+i).hasClass('correct_letter')) {

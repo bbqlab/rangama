@@ -30,7 +30,6 @@ WordList.prototype.next_word = function() {
   {
     this.init_current_words();
   }
-
   return word;
 }
 

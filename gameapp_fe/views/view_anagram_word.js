@@ -1,6 +1,6 @@
 
 <ul id='anagram_word' class='sortable'>
-  <% for (var i = 0; i < word.length; i++) {%>
-    <li id='item<%=i%>' class='letter l<%=i%>'><%=word[i]%></li>
-  <%};%>
+  {{#each word}}
+    <li id='item{{@index}}' class='letter l{{@index}}'>{{this}}</li>
+  {{/each}}
 </ul>
