@@ -736,16 +736,17 @@ ul.sortable {
 
 ul.sortable li {
   cursor:pointer;
-  font-size:80px;
-  width:100px;
-  height:100px;
+  color:#000;
+  font-size:40px;
+  width:70px;
+  height:70px;
+  margin:5px;
   border-radius:5px;
   float:left;
   border-radius:5px;
   border:1px solid #ededed;
   background:#ccc;
   -webkit-transition: box-shadow 1s;
-
 }
 
 #log li {

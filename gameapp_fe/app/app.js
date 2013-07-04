@@ -33,53 +33,6 @@ App.prototype = {
     $.ui.showBackbutton=false
   },
 
-  template_engine: function() {
-    var that = this;
-    Handlebars.registerHelper('equal', function(lvalue, rvalue, options) {
-      if (arguments.length < 3)
-          throw new Error("Handlebars Helper equal needs 2 parameters");
-      if( lvalue!=rvalue ) {
-          return options.inverse(this);
-      } else {
-          return options.fn(this);
-      }
-    });
-
-    Handlebars.registerHelper('notequal', function(lvalue, rvalue, options) {
-      if (arguments.length < 3)
-          throw new Error("Handlebars Helper equal needs 2 parameters");
-      if( lvalue==rvalue ) {
-          return options.inverse(this);
-      } else {
-          return options.fn(this);
-      }
-    });
-    $.get('views/view_game_row.js' , function(data) {
-        Handlebars.registerPartial('game_row', data)
-    });
-  },
-
-  render: function(id, tpl, params, callback) {
-    console.log(params);
-    if(this.templates[tpl])
-    {
-      html = this.templates[tpl](params);
-      $.ui.updateContentDiv(id,html);
-      if(callback) callback();
-    }
-    else
-    {
-      var that = this;
-      $.get('views/' + tpl + '.js' , function(data) {
-        var template = Handlebars.compile(data);
-        that.templates[tpl] = template;
-        html = template(params);
-        $.ui.updateContentDiv(id,html);
-        if(callback) callback();
-      });
-    }
-  },
-
   facebook_init: function() {
     var that = this;
     window.fbAsyncInit = function() {
@@ -189,6 +142,14 @@ App.prototype = {
       }
     }
   },
+  
+
+  show_game_list: function() {
+    var that = this;
+    $.getJSON(this.backend + 'list_games', {token: this.token}, function(res) {
+      that.fill_game_list(res.data.games);
+    });
+  },
 
   fill_game_list: function(games) {
     var html = '';
@@ -196,13 +157,6 @@ App.prototype = {
     this.render('#games_list', 'view_games_list', { games:this.game_list }, function() {
       $.ui.loadContent('#games_list', false, false);
       $.ui.scrollToTop('#games_list');
-    });
-  },
-
-  show_game_list: function() {
-    var that = this;
-    $.getJSON(this.backend + 'list_games', {token: this.token}, function(res) {
-      that.fill_game_list(res.data.games);
     });
   },
 
@@ -315,34 +269,35 @@ App.prototype = {
   login: function(storage, callback) {
     var that = this;
 
-    if(storage)
-    {
+    if(storage) {
       username = this.username;
       password = this.password;
     }
-    else
-    {
+    else {
       username = $('#login_username').val();
       password = $('#login_password').val();
     }
-    $.getJSON(this.backend + 'login', {username: username, password: password },
-              function(data) {
-                if(data.error) {
-                  $('body').popup({title: "Error", message: data.data });
-                }
-                else  {
-                  that.token = data.data.token;
-                  localStorage.setItem('token', that.token)
-                  localStorage.setItem('username', username)
-                  localStorage.setItem('password', password)
-                  if(callback) { 
-                    callback();
-                  }
-                  else  {
-                    that.show_game_list();
-                  }
-                }
-      });
+
+
+    function set_user_data(data) {
+      if(data.error) {
+        $('body').popup({title: "Error", message: data.data });
+      }
+      else  {
+        that.token = data.data.token;
+        localStorage.setItem('token', that.token)
+        localStorage.setItem('username', username)
+        localStorage.setItem('password', password)
+        if(callback) { 
+          callback();
+        }
+        else  {
+          that.show_game_list();
+        }
+      }
+    }
+
+    $.getJSON(this.backend + 'login', {username: username, password: password },set_user_data);
   },
 
   facebook_login: function() {
@@ -436,8 +391,8 @@ App.prototype = {
       }, function(data) { console.log(data) });
   },
 
-  skip_word: function() {
-    this.current_game.skip_word();
+  game: function(method) {
+    app.current_game[method]();
   },
 
   show_game_info: function(game_id){
@@ -458,6 +413,36 @@ App.prototype = {
     this.render('#game_info', 'view_game_info', { game:game }, function() {
       $.ui.loadContent('#game_info');
       $.ui.scrollToTop('#game_info');
+    });
+  },
+
+  show_game_results: function(game) {
+
+    this.render('#game_results', 'view_results', {game:game}, function() {
+      $.ui.loadContent('#game_results', false, false );
+
+      function set_results()
+      {
+        $('#score_label').addClass('score_label_big');
+        $('#score_number').addClass('score_number_big');
+
+        if(game.is_topten_record) {
+          $('#topten_record').addClass('record_popup_out');
+          if(this.facebook_user) {
+            this.send_results_to_fb('topten', game);
+          }
+        }
+
+        if(game.is_personal_record) {
+          console.log('personal record');
+          $('#personal_record').addClass('record_popup_out');
+          if(this.facebook_user) {
+            this.send_results_to_fb('personal', game);
+          }
+        }
+      }
+
+      setTimeout(set_results,500);
     });
   },
 

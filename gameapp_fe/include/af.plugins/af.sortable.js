@@ -164,8 +164,6 @@
                 var li_offset = myEl.offset();
                 if(relative_offset) { 
                   margin = parseInt($(this.opts.relative_to).css('marginLeft'));
-                  console.log(relative_offset);
-                  console.log(li_offset);
                   li_offset.top = li_offset.top - relative_offset.top;
                   li_offset.left = li_offset.left - relative_offset.left + margin;
                 }
@@ -181,9 +179,15 @@
                 myEl.bind('mousemove', function(e) {that.drag(e);});
                 $(document).bind('mouseup', function(e) {that.drag_end(e);});
                 myEl.bind('mousedown', function(e) {that.drag_start(e);});
+
+                myEl.jrumble({
+                  x:1,
+                  y:1,
+                  rotation:3,
+                  speed:65
+                });
             }
 
-            console.log(this.li);
         };
 
         sortable.prototype = {
@@ -198,13 +202,12 @@
             elem_idx: -1,
 
             drag_start: function(evt) {
-                console.log(_event.get_pos(evt));
                 this.elem_idx = this.index(_event.get_pos(evt));
-                console.log(this.elem_idx);
                 if(this.elem_idx >= 0 && !this.dragging) {
                     var that = this;
                     this.dragging = true;
                     this.elem = $(_event.target(evt));
+                    this.rumble('start');
                     if(this.opts.before_drag) {
                         this.opts.before_drag(this.elem, function() {
                             $(that.elem).addClass(this.opts.dragged);
@@ -222,6 +225,7 @@
             },
 
             drag_end: function(evt) {
+             
                 var pos = _event.get_pos(evt);
                 var overlap = this.is_overlapping( pos)
                 var elem_changed = false;
@@ -232,6 +236,7 @@
                 }
                 this.attach_elem();
                 this.destroy_placeholder();
+                this.rumble('stop');
                 $('.'+this.opts.overlap).removeClass(this.opts.overlap);
                 $('.'+this.opts.dragged).removeClass(this.opts.dragged);
                 this.target = false;
@@ -260,6 +265,11 @@
               }
             },
 
+            rumble: function(action) {
+              $('.sortable li').each(function(index) {
+                $(this).trigger(action+'Rumble');
+              });
+            },
 
             detach_elem: function(elem, evt) {
                 pos = _event.get_pos(evt);
@@ -316,7 +326,6 @@
                 var offset;
                 for (var i = 0; i < this.li.length; i++) {
                     offset = this.li[i]['offset'];
-                    console.log(offset);
                     if(offset.top <= pos.y && (offset.top+offset.height) >= pos.y) {
                         if(offset.left <= pos.x && (offset.left+offset.width) >= pos.x) {
                           return i;
