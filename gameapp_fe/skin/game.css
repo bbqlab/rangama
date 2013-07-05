@@ -1,0 +1,94 @@
+/*
+ *  Letter
+ */
+
+.letters li {
+  color:#444;
+  font-size:47px;
+  text-shadow:0px 0px 5px #999;
+  width:70px;
+  height:70px;
+  line-height:50px;
+
+  margin:5px;
+  border-radius:5px;
+  border:10px solid transparent;
+  background:#ccc;
+  box-shadow:0px 0px 10px #EBD03B inset;
+  -webkit-transition: box-shadow 1s;
+  text-transform:uppercase;
+
+  /* CSS */
+  background-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 114, color-stop(0%, #fcf1cf), color-stop(100%, rgb(245, 211, 25)));
+  background-image: -webkit-radial-gradient(center center, farthest-side, #fcf1cf 0%, rgb(245, 211, 25) 100%);
+  background-image: -moz-radial-gradient(center center, farthest-side, #fcf1cf 0%, rgb(245, 211, 25) 100%);
+  background-image: -ms-radial-gradient(center center, farthest-side, #fcf1cf 0%, rgb(245, 211, 25) 100%);
+  background-image: -o-radial-gradient(center center, farthest-side, #fcf1cf 0%, rgb(245, 211, 25) 100%);
+  background-image: radial-gradient(farthest-side at center center, #fcf1cf 0%, rgb(245, 211, 25) 100%);
+
+
+
+}
+
+/* 
+ * Game play  
+ */
+.game_score {
+  color:rgba(200,200,200,1);
+  text-align:center;
+  display:block;
+  text-shadow:0px 1px 1px #666;
+  font-size:40px;
+}
+
+ul.sortable {
+  position:relative;
+  list-style-type:none;
+  width:100%;
+  margin:50px auto;
+  text-align:center;
+}
+
+ul.sortable li {
+  cursor:pointer;
+  float:left;
+}
+
+.ui-placeholder {
+  box-shadow:0px 0px 10px #333 inset;
+  color:transparent;
+}
+
+.ui-overlap {
+  border:10px solid rgba(200,0,0,0.5) !important;
+}
+
+.ui-dragged {
+}
+
+.correct_letter {
+  background:#00dd00 !important;
+}
+
+/* 
+ * Game results  
+ */
+
+.score_number_big {
+  -webkit-animation: grow_number 1s;
+  font-size:135px !important;
+  opacity:1 !important;
+}
+
+.score {
+  font-size:35px !important;
+  color:#fff !important;
+  text-shadow:0px 3px 3px #
+}
+
+#results h4 {
+  font-size: 25px;
+  font-weight: normal !important;
+  text-align: center;
+  color: rgb(200,200,200);
+}

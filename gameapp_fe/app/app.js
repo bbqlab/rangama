@@ -106,8 +106,33 @@ App.prototype = {
     return true;
   },
 
+  init_background: function() {
+    return;
+    var possible = 'abcdefghijklmnopqrstuvwxyz';
+    var letters = [];
+    for (var i = 0; i < 20; i++) {
+       letters.push(possible.charAt(Math.floor(Math.random() * possible.length)));
+    }
+
+    console.log(letters);
+
+    function random_position() {
+      var bg_offset = $('#background').offset();
+
+    }
+
+    function random_angle() {
+    }
+
+    app.render('#background','view_background',{letters: letters},function() {
+       console.log('background');
+    });
+
+  },
+
   main: function() {
     this.load_settings();
+    this.init_background();
     var that = this;
 
     if(this.username != '' && this.password != '')
@@ -417,7 +442,6 @@ App.prototype = {
   },
 
   show_game_results: function(game) {
-
     this.render('#game_results', 'view_results', {game:game}, function() {
       $.ui.loadContent('#game_results', false, false );
 
