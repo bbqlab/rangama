@@ -1,10 +1,13 @@
 
-function WordList(){
+function WordList(game_id){
   this.dictionary = [];
+  this.game_id = game_id;
   this.words = [];
   this.completed = [];
   this.n_dictionary_words=0;
-  this.load();
+  this.current = -1;
+  this.current_distance = 4;
+  this.fetched = 0;
 }
 
 WordList.prototype.each = function(callback) {
@@ -13,42 +16,39 @@ WordList.prototype.each = function(callback) {
    });
 };
 
-WordList.prototype.load = function() {
-  this.dictionary = italian_dictionary;
-  this.n_dictionary_words = this.dictionary.length;
-  this.init_current_words();
+WordList.prototype.load = function(callback) {
+  this.fetch_words(callback);
 };
 
-WordList.prototype.init_current_words = function() {
-  this.words = this.take_dictionary_words(6);
-  console.log(this.words);
-};
+WordList.prototype.fetch_words = function(callback) {
+  var that = this;
 
-WordList.prototype.next_word = function() {
+  var params = {
+    token: app.token,
+    gamesId: this.game_id,
+    limit: 20,
+    offset: this.fetched,
+    distance: this.current_distance
+  };
+
+  $.getJSON(app.backend+"/get_words", params, function(words) {
+    that.words = words.data;
+    callback();
+  });
+}
+
+
+WordList.prototype.next_word = function() { 
   var word = this.words.pop();
+  console.log(word);
   if(this.words.length == 0)
   {
-    this.init_current_words();
+    //TODO
   }
   return word;
 }
 
-WordList.prototype.take_dictionary_words = function(n) {
-  var i=0,id;
-  var words = [];
-
-  for(;i<n;i++)
-  {
-    id=Math.floor(Math.random()*this.n_dictionary_words);
-    words = words.concat(this.dictionary.splice(id,1));
-  }
-
-  return words;
-
-};
-
 WordList.prototype.check_word = function(word) {
-
   word = word.toLowerCase();
   var id = this.words.indexOf(word.toLowerCase());
 
@@ -68,11 +68,4 @@ WordList.prototype.check_word = function(word) {
   }
 };
 
-WordList.prototype.get_word = function(id) {
-  return this.words[id];
-};
-
-WordList.prototype.update_word = function(id) {
-  this.words[id]=this.take_dictionary_words(1)[0];
-};
 

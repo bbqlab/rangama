@@ -62,6 +62,8 @@ class BaseEntity extends CI_Model {
   {
     $this->db->select('*');
     $this->db->from($this->table());
+
+
     
     if(is_array($conditions))
     {
@@ -119,7 +121,7 @@ class BaseEntity extends CI_Model {
         $this->db->where( array( $key => $condition ) );
       }
     }
-
+    
     $this->db->limit(1);
     
     $row = $this->db->get()->row();
@@ -135,9 +137,7 @@ class BaseEntity extends CI_Model {
     $this->db->select('*')->from($this->table());
     $this->db->where(array( $attribute => $value ));
     $result = $this->db->get()->row();
-    GameApp::log($this->db->last_query());
-    GameApp::log($result);
-    $this->initFromDB($result);
+    return $this->initFromDB($result);
   }
 
   function toArray()
@@ -161,16 +161,7 @@ class BaseEntity extends CI_Model {
     $where = array( $this->id() => $id );
     $query = $this->db->get_where( $this->table(), $where, 1 );
     $result = $query->row();
-    
-    $properies = get_object_vars( $this );
-
-    foreach( $properies as $name => $value )
-    {
-      if(isset($result->$name))
-      {
-        $this->$name = $result->$name;
-      }
-    }
+    return $this->initFromDB($result);
   }
 
   /*!
@@ -193,9 +184,9 @@ class BaseEntity extends CI_Model {
     {
       foreach( get_object_vars( $this ) as $var => $value )
       {
-        if( isset( $result[$var]))
+        if(isset( $result[$var]))
         {
-          $this->$var = $result[$var];
+          $this->$var = $this->check_json($result[$var]);
         }
       }
     }
@@ -205,10 +196,22 @@ class BaseEntity extends CI_Model {
       {
         if( isset( $result->$var ) )
         {
-          $this->$var = $result->$var;
+          $this->$var = $this->check_json($result->$var);
         }
       }
     }
+    return $this;
+  }
+
+  function check_json($string) 
+  {
+    $object = json_decode($string);
+    return is_array($object)?$object:$string;
+  }
+
+  function count() 
+  {
+    return $this->db->count_all_results($this->table());
   }
 
   function loadChildren( $childs = NULL, $list = NULL )
@@ -251,6 +254,14 @@ class BaseEntity extends CI_Model {
   {
     $id = $this->id();
 
+    foreach ($this as $attr => $value) {
+      if(is_array($value) || is_object($value)) { 
+        $this->$attr = json_encode($value);
+      }
+    }
+
+    GameApp::log($this);
+
     if( $this->$id == '' ) // insert
     {
       unset($this->$id);
@@ -266,6 +277,8 @@ class BaseEntity extends CI_Model {
       $this->db->update( $this->table(), $this );
       $this->$id = $temp;
     }
+
+    GameApp::log($this->db->last_query());
   }
 
   function delete()

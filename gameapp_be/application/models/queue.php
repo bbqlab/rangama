@@ -32,6 +32,8 @@ class Queue extends BaseEntity
   { 
     $info = $this->search(array('usersId != ' => $usersId),
                           1,'');
+
+    GameApp::log($info);
     if(count($info) > 0)
     {
       $queueInfo = new Queue();

@@ -116,9 +116,12 @@ class GameApp extends CI_Controller {
     $token = $this->input->get('token'); 
 
     $user = new Users();
+    GameApp::log('token: ' .$token);
+
     $user->loadFromToken($token);
 
     GameApp::log("Requesting game for " . $user->username);
+
     $response = array('error'=> true, 'data' => '');
     
     $queue = new Queue();
@@ -126,10 +129,10 @@ class GameApp extends CI_Controller {
 
     if($queue->count($user->usersId) > 0)
     {
-      GameApp::log('Player found');
+      GameApp::log('Player found -> ' . $user->usersId);
       // add new player
-      $gameInfo = $queue->pop($user->usersId);
 
+      $gameInfo = $queue->pop($user->usersId);
       GameApp::log($gameInfo);
       $game->load($gameInfo->gamesId);
       GameApp::log($game);
@@ -146,6 +149,7 @@ class GameApp extends CI_Controller {
       GameApp::log('Player not found: enqueue');
       // player in the queue
       $game->init();
+
       $game->player1 = $user->usersId;
       $game->save();
 
@@ -167,6 +171,31 @@ class GameApp extends CI_Controller {
     $tpl = $this->input->get('name');
     GameApp::log($tpl);
 
+    $this->response($response);
+  }
+
+  public function get_words()
+  {
+    $response = array('error' => false, 
+                      'data' => array());
+    $token = $this->input->get('token'); 
+    $gamesId = $this->input->get('gamesId');
+    $limit = $this->input->get('limit');
+    $offset = $this->input->get('offset');
+    
+    $user = new Users();
+    if($user->authenticated($token))
+    {
+      $game = $user->getGame($gamesId);
+      if($game)
+      {
+        $words = $game->get_words($limit, $offset);
+        $response['data'] = $words;
+      }
+    }
+
+    GameApp::log($response);
+    
     $this->response($response);
   }
 

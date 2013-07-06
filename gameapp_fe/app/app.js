@@ -179,7 +179,7 @@ App.prototype = {
   fill_game_list: function(games) {
     var html = '';
     this.game_list=games;
-    this.render('#games_list', 'view_games_list', { games:this.game_list }, function() {
+    this.render('#games_list', 'view_games_list', {games:this.game_list}, function() {
       $.ui.loadContent('#games_list', false, false);
       $.ui.scrollToTop('#games_list');
     });
@@ -229,6 +229,7 @@ App.prototype = {
   request_player: function() {
     var that = this;
     $('#request_player_button').addClass('spin').html('Waiting player..').addClass('button_disabled');
+    console.log(this.token);
     $.getJSON(this.backend + 'request_player', {token: this.token}, function(res) {
       that.game_check_interval = setTimeout(function() {that.check_games()},1000);
     });
@@ -238,14 +239,12 @@ App.prototype = {
     var that = window.app;
     console.log(that);
     $.getJSON(that.backend +'list_games', {token:that.token}, function(res) {
-      if(res.data.games.running.length > 0)
-      {
+      if(res.data.games.running.length > 0) {
         $('#request_player_button').removeClass('spin').html('New game').removeClass('button_disabled');
         clearInterval(that.game_check_interval);
         that.fill_game_list(res.data.games);
       }
-      else
-      {
+      else {
         that.game_check_interval = setTimeout(that.check_games,1000);
       }
     });

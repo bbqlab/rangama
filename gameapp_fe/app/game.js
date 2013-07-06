@@ -29,10 +29,13 @@ function RangamaGame(id){
 };
 
 RangamaGame.prototype.start = function() {
-  this.word_list = new WordList();
-  this.draw_word(this.next_word());
-  this.bind_events();
-  $.ui.scrollToTop('#game_play');
+  var that = this;
+  this.word_list = new WordList(this.id);
+  this.word_list.load(function() {
+    that.draw_word(that.next_word());
+    that.bind_events();
+    $.ui.scrollToTop('#game_play');
+  });
 };
 
 RangamaGame.prototype.timer_tick = function() {
@@ -48,16 +51,14 @@ RangamaGame.prototype.stop = function() {
       game = app.current_game;
       game.unbind_events();
       app.set_game_score(game.id,game.score);
-
-
       app.show_game_results(game);
-
     });
 };
 
 RangamaGame.prototype.next_word = function() {
-  this.real_word = this.word_list.next_word().split("");
-  this.current_word = this.shuffle_word(this.real_word);
+  var anagrams = this.word_list.next_word();
+  this.real_word = anagrams.anagram.split('');
+  this.current_word = anagrams.word.split('');
 
   return this.current_word;
 };
@@ -79,13 +80,10 @@ RangamaGame.prototype.shuffle_word = function(real_word) {
 RangamaGame.prototype.draw_word = function(word) {
   var that = this;
   this.stats.partial[++this.word_id] = {right_moves:0, bad_moves:0};
-
   app.render('#anagram_box', 'view_anagram_word', { word: word }, function() {
     $('.sortable').sortable({
       after_drag: that.change_letters
     });
-
-
     this.word_interval = window.setInterval( this.timer_tick, 1000 );
     that.check_word(-1, -1);
   });
@@ -156,7 +154,7 @@ RangamaGame.prototype.word_hit = function() {
   function go_next() {
     $('.feedback').removeClass('feedback_on');
     console.log('finishing game ' + that.word_id);
-    if(that.word_id == 2) { // game over
+    if(that.word_id == 10) { // game over
       that.stop();
     } else {
       that.draw_word(word);

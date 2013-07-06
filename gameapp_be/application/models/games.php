@@ -30,6 +30,7 @@ class Games extends BaseEntity
   var $date;
   var $state;
   var $turn;
+  var $words;
 
   public function init()
   {
@@ -40,6 +41,41 @@ class Games extends BaseEntity
     $this->date = date("Y-m-d H:i:s");
     $this->state = 'pending';
     $this->turn = 1;
+
+    $this->words = $this->random_words();
+  }
+
+  public function random_words()
+  {
+    $pool = array();
+    $anagram = new Anagrams();
+    while(count($pool) < 100) {
+      $id = rand(0, $anagram->count());
+      if(!in_array($id, $pool)) {
+        $ana = new Anagrams($id);
+        $pool[] = array(
+          'anagramsId' => $ana->anagramsId,
+          'length' => count($ana->word),
+          'distance' => $ana->distance
+        );
+      }
+    }
+    
+    return $pool;
+  }
+
+  public function get_words($limit, $offset)
+  {
+    $words = array();
+    GameApp::log($limit . ' --- '. $offset);
+    for ($i = $offset; $i < $limit + $offset; $i++) {
+      $anagram = new Anagrams($this->words[$i]->anagramsId);
+
+      $words[] = array('word'=> $anagram->word, 
+                       'anagram' =>  $anagram->anagram);
+    }
+
+    return $words;
   }
 
   public function checkRecords($user,$score)

@@ -31,6 +31,12 @@ class Users extends BaseEntity
   var $image;
   var $facebookId;
 
+  public function authenticated($token) 
+  {
+    $this->loadFromToken($token);
+    return $this->usersId != '';
+  }
+
   public function listGames()
   {
     $game = new Games();
@@ -86,10 +92,23 @@ class Users extends BaseEntity
         $game->state = 'running_opponent';
       }
 
+      unset($game->words);
       $list[$game->state][] = $game;
     }
     
     return $list;
+  }
+
+  public function getGame($gamesId)
+  {
+    $game = new Games($gamesId);
+    GameApp::log($gamesId);
+    if($game->player1 == $this->usersId or $game->player2 == $this->usersId)
+    {
+      return $game;
+    }
+
+    return false;
   }
 
   public function getSettings()
