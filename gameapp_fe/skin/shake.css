@@ -6,10 +6,24 @@
   100%{-webkit-transform-origin:50% 50%;-webkit-transform:translate(0px,0px) rotate(0deg)}
 }
 
-.shake {
+.shake_0 {
+	-webkit-transform:translate(0,0,0) !important;
+    -webkit-backface-visibility: hidden;
   -webkit-animation-name:shake;
-  -webkit-animation-duration:.3s;
+  -webkit-animation-duration:.4s;
+  -webkit-animation-delay:.2s;
   -webkit-transform-origin:50% 50%;
   -webkit-animation-iteration-count:infinite;
   -webkit-animation-timing-function:linear
 }
+
+.shake_1 {
+	-webkit-transform:translate(0,0,0) !important;
+    -webkit-backface-visibility: hidden;
+  -webkit-animation-name:shake;
+  -webkit-animation-duration:.4s;
+  -webkit-transform-origin:50% 50%;
+  -webkit-animation-iteration-count:infinite;
+  -webkit-animation-timing-function:linear
+}
+

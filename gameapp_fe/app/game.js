@@ -92,14 +92,15 @@ RangamaGame.prototype.draw_word = function(word) {
 };
 
 RangamaGame.prototype.init_drag = function(dragged,callback) {
-  console.log("Start dragging");
-  $('.letter').addClass('shake');
+  $('.letter').each(function(id,el){
+    $(this).addClass('shake_'+id%2);
+  });
   callback();
 };
 
 RangamaGame.prototype.end_drag = function(dragged,overlap){
   window.app.current_game.change_letters(dragged,overlap);
-  $('.letter').removeClass('shake');
+  $('.letter').removeClass('shake_0 shake_1 shake_2');
 };
 
 RangamaGame.prototype.change_letters = function(dragged, overlap) {
