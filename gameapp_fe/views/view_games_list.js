@@ -1,5 +1,6 @@
 <div class='panel_header'>
   <a href='request_player' id='request_player_button' class='button right'>New game</a>
+  <a href='settings' class='button left'>Settings</a>
 </div>
 <div class='panel_content'>
 
@@ -29,7 +30,6 @@
       {{/games.topten}}
    </ul>
   </div>
-
 
   <div class='box'>
     <h3>Completed games</h3>
