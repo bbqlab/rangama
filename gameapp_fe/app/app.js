@@ -6,15 +6,15 @@ var App = function() {
 };
 
 App.prototype = {
-  try_to_start: function() {
+  run: function() {
+    $.console.init({only_on_mobile:false});
+    console.log('dsadsa');
+
+
     this.state++;
-    this.log('try');
-    if(this.state==1) {
-      this.log('Starting App');
-      this.setup();
-      this.template_engine();
-      this.main();
-    }
+    this.setup();
+    this.template_engine();
+    this.main();
   },
 
   /* SETUP APPLICATION (set landscape orientation, click handler, fill background...) */
@@ -495,9 +495,8 @@ var app;
 
 $.ui.ready(function() {
   app = new App();
-  app.try_to_start();
+  app.run();
   window.app = app;
-  
   //app.facebook_init();
 });
 

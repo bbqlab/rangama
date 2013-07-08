@@ -128,6 +128,26 @@ class Games extends BaseEntity
     return $topten;
   }
 
+  public function add_player($user)
+  {
+    $queue = new Queue();
+    $gameInfo = $queue->pop($user->usersId);
+    $this->load($gameInfo->gamesId);
+    $this->player2 = $user->usersId;
+    $this->state = 'running';
+    $this->save();
+    $gameInfo->delete();
+  }
+
+  public function new_game($user)
+  {
+    $queue = new Queue();
+    $this->init();
+    $this->player1 = $user->usersId;
+    $this->save();
+    $queue->push($user, $this->gamesId);
+  }
+
   public function getRole($user)
   {
     if($this->player1 == $user->usersId)

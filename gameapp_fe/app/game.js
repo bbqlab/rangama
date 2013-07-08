@@ -20,6 +20,7 @@ function RangamaGame(id){
   for(i in this.audio_ok) {
     this.audio_ok[i].load();
   }
+
   this.audio_error = new Audio('audio/error.wav');
   this.audio_error.load();
   this.audio_panic = new Audio('audio/panic.wav');
@@ -80,7 +81,7 @@ RangamaGame.prototype.shuffle_word = function(real_word) {
 RangamaGame.prototype.draw_word = function(word) {
   var that = this;
   this.stats.partial[++this.word_id] = {right_moves:0, bad_moves:0};
-  app.render('#anagram_box', 'view_anagram_word', { word: word }, function() {
+  app.render('#anagram_box', 'view_anagram_word', {word: word}, function() {
     $('.sortable').sortable({
       after_drag: that.change_letters
     });
@@ -110,9 +111,7 @@ RangamaGame.prototype.check_word = function(dragged, overlap) {
         if(i == dragged || i == overlap) 
           this.stats.partial[this.word_id].right_moves++;
       }
-    }
-    else
-    {
+    } else {
       correct = false;
       if($('.l'+i).hasClass('correct_letter')) {
         $('.l'+i).removeClass('correct_letter');
@@ -130,7 +129,7 @@ RangamaGame.prototype.check_word = function(dragged, overlap) {
 RangamaGame.prototype.random_ok = function() {
   var rand =  Math.floor(Math.random() * 3);
   return this.audio_ok[rand];
-}
+};
 
 RangamaGame.prototype.word_hit = function() {
   var word = this.current_word.join('');
@@ -165,12 +164,13 @@ RangamaGame.prototype.word_hit = function() {
 };
 
 RangamaGame.prototype.get_score = function(word) {
-   var score = word.length*this.rules.letter_weight,
-       stats = this.stats.partial[this.word_id];
+   var stats = this.stats.partial[this.word_id];
+   var score;
    
    console.log('score is ' + score);
-   console.log('stats bad: ' + stats.bad_moves);
-   console.log('stats right: ' + stats.right_moves);
+   console.log('moves bad: ' + stats.moves);
+   console.log('word time is: ' + this.word_time);
+
    score = parseInt(score * (stats.right_moves) / (stats.bad_moves+1));
    return score;
 };

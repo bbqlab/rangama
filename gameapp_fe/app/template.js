@@ -20,6 +20,8 @@ App.prototype.template_engine = function() {
           return options.fn(this);
       }
     });
+
+
     $.get('views/view_game_row.js' , function(data) {
         Handlebars.registerPartial('game_row', data)
     });

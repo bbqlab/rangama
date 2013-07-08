@@ -19,7 +19,6 @@ class GameApp extends CI_Controller {
                       'data'=> 'Authentication error');
 
     $user->loadFromUsername($username);
-    GameApp::log($user);
 
     if($user->password == $password and $user->isValid())
     {
@@ -114,49 +113,33 @@ class GameApp extends CI_Controller {
   public function request_player()
   {
     $token = $this->input->get('token'); 
+    $response = array('error'=> true, 'data' => '');
 
     $user = new Users();
-    GameApp::log('token: ' .$token);
-
-    $user->loadFromToken($token);
-
-    GameApp::log("Requesting game for " . $user->username);
-
-    $response = array('error'=> true, 'data' => '');
-    
-    $queue = new Queue();
-    $game = new Games();
-
-    if($queue->count($user->usersId) > 0)
+    if($user->authenticated($token))
     {
-      GameApp::log('Player found -> ' . $user->usersId);
-      // add new player
+      GameApp::log("Requesting game for " . $user->username);
+      $queue = new Queue();
+      $game = new Games();
 
-      $gameInfo = $queue->pop($user->usersId);
-      GameApp::log($gameInfo);
-      $game->load($gameInfo->gamesId);
-      GameApp::log($game);
-      $game->player2 = $user->usersId;
-      $game->state = 'running';
-      $game->save();
-      $gameInfo->delete();
+      if($queue->count($user->usersId) > 0)
+      {
+        GameApp::log('Player found -> ' . $user->usersId);
+        // add new player
+        $game->add_player($user);
 
-      $response['error'] = false;
-      $response['data'] = array('game' => $game);
-    }
-    else
-    {
-      GameApp::log('Player not found: enqueue');
-      // player in the queue
-      $game->init();
+        $response['error'] = false;
+        $response['data'] = array('game' => $game);
+      }
+      else
+      {
+        GameApp::log('Player not found: enqueue');
+        // player in the queue
+        $game->new_game($user);
 
-      $game->player1 = $user->usersId;
-      $game->save();
-
-      $queue->push($user, $game->gamesId);
-
-      $response['error'] = false;
-      $response['data'] = array('game' => $game);
+        $response['error'] = false;
+        $response['data'] = array('game' => $game);
+      }
     }
 
     $this->response($response);
@@ -170,7 +153,6 @@ class GameApp extends CI_Controller {
     GameApp::log('templating');
     $tpl = $this->input->get('name');
     GameApp::log($tpl);
-
     $this->response($response);
   }
 
@@ -210,17 +192,11 @@ class GameApp extends CI_Controller {
       'completed' => array()
     );
 
-
-
     $response = array('error' => false, 
                       'data' => array('games' => $games));
 
     $user = new Users();
-    $user->loadFromToken($token);
-    GameApp::log('loading user from token ' . $token);
-    GameApp::log($user->db->last_query());
-    GameApp::log($user);
-    if($user->usersId != '')
+    if($user->authenticated($token))
     {
       $games = $user->listGames();
 
@@ -240,9 +216,10 @@ class GameApp extends CI_Controller {
                       'data' => array());
 
     $user = new Users();
-    $user->loadFromToken($token);
-
-    $response['data'] = $user->getSettings();
+    if($user->authenticated($token))
+    {
+      $response['data'] = $user->getSettings();
+    }
     $this->response($response);
   }
 
@@ -254,9 +231,7 @@ class GameApp extends CI_Controller {
                       'data' => array());
 
     $user = new Users();
-    $user->loadFromToken($token);
-
-    if($user->isValid())
+    if($user->authenticated($token))
     {
       $user->image = $url;
       $user->save();
@@ -271,11 +246,9 @@ class GameApp extends CI_Controller {
     $token = $this->input->get('token');
     $score = $this->input->get('score');
 
-    $user = new Users();
-    $user->loadFromToken($token);
     GameApp::log("Result {$user->username} for $gamesId: $score"); 
-
-    if($user->usersId != '')
+    $user = new Users();
+    if($user->authenticated($token))
     {
       $game = new Games($gamesId);
       if($game->gamesId != '')

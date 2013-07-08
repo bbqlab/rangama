@@ -180,12 +180,6 @@
                 $(document).bind('mouseup', function(e) {that.drag_end(e);});
                 myEl.bind('mousedown', function(e) {that.drag_start(e);});
 
-                myEl.jrumble({
-                  x:1,
-                  y:1,
-                  rotation:3,
-                  speed:65
-                });
             }
 
         };
@@ -207,7 +201,6 @@
                     var that = this;
                     this.dragging = true;
                     this.elem = $(_event.target(evt));
-                    this.rumble('start');
                     if(this.opts.before_drag) {
                         this.opts.before_drag(this.elem, function() {
                             $(that.elem).addClass(this.opts.dragged);
@@ -236,7 +229,6 @@
                 }
                 this.attach_elem();
                 this.destroy_placeholder();
-                this.rumble('stop');
                 $('.'+this.opts.overlap).removeClass(this.opts.overlap);
                 $('.'+this.opts.dragged).removeClass(this.opts.dragged);
                 this.target = false;
@@ -265,11 +257,6 @@
               }
             },
 
-            rumble: function(action) {
-              $('.sortable li').each(function(index) {
-                $(this).trigger(action+'Rumble');
-              });
-            },
 
             detach_elem: function(elem, evt) {
                 pos = _event.get_pos(evt);
