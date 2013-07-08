@@ -81,9 +81,7 @@
       if(!this.settings.local_logging) return;
 
       var action;
-//      $(document).on('doubleTap', this.toggle_console);
-      console.log('dsadsa');
-      $('#consolebtn').on('click', this.toggle_console);
+      $('body').on('doubleTap', this.toggle_console);
     },
 
     toggle_console: function(){

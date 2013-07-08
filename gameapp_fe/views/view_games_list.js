@@ -1,6 +1,5 @@
 <div class='panel_header'>
   <a href='request_player' id='request_player_button' class='button right'>New game</a>
-  <button id='consolebtn' class='left'>console</button>
 </div>
 <div class='panel_content'>
 
