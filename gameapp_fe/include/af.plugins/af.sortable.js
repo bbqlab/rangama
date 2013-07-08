@@ -226,6 +226,9 @@
                 if(overlap >= 0) {
                     dragged_id = this.swap_elements(overlap);
                     var elem_changed = true;
+                    if(this.opts.after_drag && dragged_id >= 0) {
+                        this.opts.after_drag(dragged_id, overlap);
+                    }
                 }
                 this.attach_elem();
                 this.destroy_placeholder();
