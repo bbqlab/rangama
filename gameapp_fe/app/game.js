@@ -83,11 +83,22 @@ RangamaGame.prototype.draw_word = function(word) {
   this.stats.partial[++this.word_id] = {right_moves:0, bad_moves:0};
   app.render('#anagram_box', 'view_anagram_word', {word: word}, function() {
     $('.sortable').sortable({
-      after_drag: that.change_letters
+      before_drag: that.init_drag,
+      after_drag: that.end_drag
     });
     this.word_interval = window.setInterval( this.timer_tick, 1000 );
     that.check_word(-1, -1);
   });
+};
+
+RangamaGame.prototype.init_drag = function(dragged) {
+  console.log("Start dragging");
+  $('.letter').addClass('shake');
+};
+
+RangamaGame.prototype.end_drag = function(dragged,overlap){
+  window.app.current_game.change_letters(dragged,overlap);
+  $('.letter').removeClass('shake');
 };
 
 RangamaGame.prototype.change_letters = function(dragged, overlap) {

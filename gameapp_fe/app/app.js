@@ -7,9 +7,6 @@ var App = function() {
 
 App.prototype = {
   run: function() {
-    $.console.init({only_on_mobile:false});
-    console.log('dsadsa');
-
 
     this.state++;
     this.setup();
