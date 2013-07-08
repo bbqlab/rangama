@@ -91,9 +91,10 @@ RangamaGame.prototype.draw_word = function(word) {
   });
 };
 
-RangamaGame.prototype.init_drag = function(dragged) {
+RangamaGame.prototype.init_drag = function(dragged,callback) {
   console.log("Start dragging");
   $('.letter').addClass('shake');
+  callback();
 };
 
 RangamaGame.prototype.end_drag = function(dragged,overlap){
