@@ -203,7 +203,7 @@
                     this.elem = $(_event.target(evt));
                     if(this.opts.before_drag) {
                         this.opts.before_drag(this.elem, function() {
-                            $(that.elem).addClass(this.opts.dragged);
+                            $(that.elem).addClass(that.opts.dragged);
                             that.target = that.detach_elem(that.elem, evt);
                             that.create_placeholder(that.elem);
                         });
@@ -222,13 +222,10 @@
                 var pos = _event.get_pos(evt);
                 var overlap = this.is_overlapping( pos)
                 var elem_changed = false;
-                var dragged_id = -1;
+                var dragged_id = this.elem_idx;
                 if(overlap >= 0) {
                     dragged_id = this.swap_elements(overlap);
                     var elem_changed = true;
-                    if(this.opts.after_drag && dragged_id >= 0) {
-                        this.opts.after_drag(dragged_id, overlap);
-                    }
                 }
                 this.attach_elem();
                 this.destroy_placeholder();
